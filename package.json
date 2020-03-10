@@ -1,0 +1,13 @@
+{
+  "name": "gutenberg-latest-posts",
+  "version": "1.0.0",
+  "license": "GPL-3.0-or-later",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "wp-scripts start",
+    "build": "wp scripts build"
+  },
+  "devDependencies": {
+    "@wordpress/scripts": "^7.1.2"
+  }
+}
