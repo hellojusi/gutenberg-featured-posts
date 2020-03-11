@@ -25,7 +25,6 @@ add_action( 'init', 'jusi_load_textdomain' );
 /**
  * Add custom block category
  */
-
 function jusi_block_categories( $categories, $post ) {
   return array_merge(
     $categories,
@@ -40,10 +39,10 @@ function jusi_block_categories( $categories, $post ) {
 }
 add_action( 'block_categories', 'jusi_block_categories', 10, 2 );
 
+
 /** 
  * Register block assets
  */
-
 function jusi_register_blocks() {
 
   // Exit if block editor isn't active
@@ -79,9 +78,55 @@ function jusi_register_blocks() {
   register_block_type( 'jusi/latest-posts', array(
     'style' => 'jusi-frontend-style',
     'editor_style' => 'jusi-editor-style',
-    'editor_script' => 'jusi-editor-script'
+    'editor_script' => 'jusi-editor-script',
+    'render_callback' => 'jusi_latest_posts_render_callback'
   ) );
-
   
 }
 add_action( 'init', 'jusi_register_blocks' );
+
+
+/**
+ * Callback function that renders the block on the front-end
+ */
+function jusi_latest_posts_render_callback( $attributes, $content ) {
+  global $post;
+  $output = null;
+
+  $latest_posts = wp_get_recent_posts( array(
+    'numberposts' => 3,
+    'post_status' => 'publish'
+  ) );
+
+  // Bail if there are no posts in the query
+  if ( count( $latest_posts ) === 0 ) {
+    return 'No posts.';
+  }
+
+  // Build markup
+  $output = 
+  '<div class="jusi-block jusi-latest-posts">
+    <h4 class="jusi-block__section-title">Section title here.</h4>
+    <ul>';
+
+  foreach ( $latest_posts as $latest_post ) {
+    $post_ID = $latest_post['ID'];
+    $post = get_post( $post_ID );
+    setup_postdata( $post );
+
+    $output .= 
+    '<li class="jusi-block__post">
+      <h5 class="jusi-block__post-title">
+        <a href="' . esc_url( get_the_permalink( $post) ) . '">
+          ' . esc_html( get_the_title( $post ) ) . '
+        </a>
+      </h5>
+    </li>';
+
+    wp_reset_postdata();
+  }
+
+  $output .= '</ul></div>';
+
+  return $output;
+}
