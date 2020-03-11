@@ -130,3 +130,20 @@ function jusi_latest_posts_render_callback( $attributes, $content ) {
 
   return $output;
 }
+
+
+/**
+ * Add post featured image to the REST API response
+ */
+function jusi_featured_images_restapi( $data, $post, $context ) {
+
+  $image_id = $data->data['featured_media'];
+  $image_url = wp_get_attachment_image_src( $image_id, 'thumbnail' );
+
+  if ( $image_url ) {
+    $data->data['jusi_featured_image_url'] = $image_url[0];
+  }
+
+  return $data;
+}
+add_filter( 'rest_prepare_post', 'jusi_featured_images_restapi', 10, 3 );

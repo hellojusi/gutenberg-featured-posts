@@ -31,7 +31,7 @@ registerBlockType('jusi/latest-posts', {
     }
 
     // const post = posts[0];
-    // console.log(post);
+    // console.info(post);
 
     return (
       <div className={`${className} jusi-block jusi-latest-posts`}>
@@ -43,6 +43,7 @@ registerBlockType('jusi/latest-posts', {
           {posts.map(function(post) {
             return (
               <li className="jusi-block__post">
+                <img src={post.jusi_featured_image_url} alt={post.title.rendered} />
                 <h5 className="jusi-block__post-title">
                   <a href={post.link}>{post.title.rendered}</a>
                 </h5>
